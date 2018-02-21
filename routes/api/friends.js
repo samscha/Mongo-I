@@ -40,7 +40,7 @@ router.get('/', (req, res) => {
     );
 });
 
-router.get('/api/friends/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const { id } = req.params;
 
   Friend.findById(id)
@@ -66,9 +66,9 @@ router.get('/api/friends/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { firstName, lastName } = req.body;
+  const { firstName, lastName, middleName } = req.body;
   const age = +req.body.age;
-  const friendInformation = { firstName, lastName, age };
+  const friendInformation = { firstName, middleName, lastName, age };
 
   if (!validate({ ...friendInformation, age: req.body.age }, res)) {
     return;
@@ -86,7 +86,7 @@ router.post('/', (req, res) => {
     );
 });
 
-router.delete('/api/friends/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
   Friend.findByIdAndRemove(id)
@@ -104,14 +104,14 @@ router.delete('/api/friends/:id', (req, res) => {
     .catch(err => {
       if (err.kind === 'ObjectId') {
         res.status(500).json({
-          error: 'The information could not be retrieved.',
+          error: 'The friend could not be removed',
         });
         return;
       }
     });
 });
 
-router.put('/api/friends/:id', (req, res) => {
+router.put('/:id', (req, res) => {
   const { id } = req.params;
 
   const { firstName, lastName } = req.body;
@@ -137,7 +137,7 @@ router.put('/api/friends/:id', (req, res) => {
     .catch(err => {
       if (err.kind === 'ObjectId') {
         res.status(500).json({
-          error: 'The information could not be retrieved.',
+          error: 'The friend information could not be modified.',
         });
         return;
       }

@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const Friend = require('./Friends/FriendModel.js');
 
 const friendsAPI = require('./routes/api/friends');
+const postsAPI = require('./routes/api/posts');
 
 const server = express();
 
@@ -15,6 +16,7 @@ server.use(cors()); // https://medium.com/trisfera/using-cors-in-express-cac7e29
 server.use(bodyParser.json());
 
 server.use('/api/friends', friendsAPI);
+server.use('/api/posts', postsAPI);
 
 server.get('/', function(req, res) {
   res.status(200).json({ status: 'API Running' });

@@ -12,9 +12,7 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  authors: [
-    { type: ObjectId, ref: 'Friend', required: true, default: 'anonymouse' },
-  ],
+  authors: [{ type: ObjectId, ref: 'Friend', required: true }],
   createdOn: {
     type: Date,
     required: true,
@@ -22,6 +20,6 @@ const PostSchema = new mongoose.Schema({
   },
 });
 
-const PostModel = mongoose.model('Post', PostSchema);
+const PostModel = mongoose.model('Post', PostSchema, 'BlogPosts');
 
 module.exports = PostModel;

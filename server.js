@@ -6,11 +6,15 @@ const mongoose = require('mongoose');
 
 const Friend = require('./Friends/FriendModel.js');
 
+const friendsAPI = require('./routes/api/friends');
+
 const server = express();
 
 server.use(helmet()); // https://helmetjs.github.io/
 server.use(cors()); // https://medium.com/trisfera/using-cors-in-express-cac7e29b005b
 server.use(bodyParser.json());
+
+server.use('/api/friends', friendsAPI);
 
 server.get('/', function(req, res) {
   res.status(200).json({ status: 'API Running' });
@@ -43,36 +47,36 @@ const isOf = age => {
   return Number.isInteger(age) && age >= 1 && age <= 120;
 };
 
-server.post('/api/friends', (req, res) => {
-  const { firstName, lastName } = req.body;
-  const age = +req.body.age;
-  const friendInformation = { firstName, lastName, age };
+// server.post('/api/friends', (req, res) => {
+//   const { firstName, lastName } = req.body;
+//   const age = +req.body.age;
+//   const friendInformation = { firstName, lastName, age };
 
-  if (!validate({ ...friendInformation, age: req.body.age }, res)) {
-    return;
-  }
+//   if (!validate({ ...friendInformation, age: req.body.age }, res)) {
+//     return;
+//   }
 
-  const friend = new Friend(friendInformation);
+//   const friend = new Friend(friendInformation);
 
-  friend
-    .save()
-    .then(savedFriend => res.status(201).json(savedFriend))
-    .catch(err =>
-      res.status(500).json({
-        error: 'There was an error while saving the friend to the database',
-      }),
-    );
-});
+//   friend
+//     .save()
+//     .then(savedFriend => res.status(201).json(savedFriend))
+//     .catch(err =>
+//       res.status(500).json({
+//         error: 'There was an error while saving the friend to the database',
+//       }),
+//     );
+// });
 
-server.get('/api/friends', (req, res) => {
-  Friend.find()
-    .then(friends => res.status(200).json(friends))
-    .catch(err =>
-      res.status(500).json({
-        error: 'The information could not be retrieved.',
-      }),
-    );
-});
+// server.get('/api/friends', (req, res) => {
+//   Friend.find()
+//     .then(friends => res.status(200).json(friends))
+//     .catch(err =>
+//       res.status(500).json({
+//         error: 'The information could not be retrieved.',
+//       }),
+//     );
+// });
 
 server.get('/api/friends/:id', (req, res) => {
   const { id } = req.params;
@@ -158,7 +162,7 @@ server.put('/api/friends/:id', (req, res) => {
 });
 
 mongoose
-  .connect('mongodb://localhost/FriendKeeper')
+  .connect('mongodb://localhost/GenericWebsite')
   .then(db => {
     console.log(
       `Successfully connected to -- ${db.connections[0].name} -- database`,

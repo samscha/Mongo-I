@@ -155,26 +155,6 @@ server.put('/api/friends/:id', (req, res) => {
         return;
       }
     });
-
-  // Friend.findById(id)
-  //   .then(friend => {
-  //     Friend.findByIdAndUpdate(friend._id, friendInformation, { new: true })
-  //       .then(friendInformation => {
-  //         res.status(200).send(friendInformation);
-  //         return;
-  //       })
-  //       .catch(err => {
-  //         res.status(500).send({
-  //           error: 'The friend information could not be modified.',
-  //         });
-  //         return;
-  //       });
-  //   })
-  //   .catch(err => {
-  //     res.status(404).json({
-  //       message: 'The friend with the specified ID does not exist.',
-  //     });
-  //   });
 });
 
 mongoose

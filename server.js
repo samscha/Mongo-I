@@ -80,7 +80,7 @@ server.get('/api/friends/:id', (req, res) => {
   Friend.findById(id)
     .then(friend => {
       if (friend === null) {
-        res.status(500).json({
+        res.status(404).json({
           error: 'The friend with the specified ID does not exist.',
         });
         return;
@@ -91,7 +91,7 @@ server.get('/api/friends/:id', (req, res) => {
     })
     .catch(err => {
       if (err.kind === 'ObjectId') {
-        res.status(404).json({
+        res.status(500).json({
           error: 'The information could not be retrieved.',
         });
         return;
@@ -105,7 +105,7 @@ server.delete('/api/friends/:id', (req, res) => {
   Friend.findByIdAndRemove(id)
     .then(deletedFriend => {
       if (deletedFriend === null) {
-        res.status(500).json({
+        res.status(404).json({
           error: 'The friend with the specified ID does not exist.',
         });
         return;
@@ -116,7 +116,7 @@ server.delete('/api/friends/:id', (req, res) => {
     })
     .catch(err => {
       if (err.kind === 'ObjectId') {
-        res.status(404).json({
+        res.status(500).json({
           error: 'The information could not be retrieved.',
         });
         return;
@@ -135,25 +135,46 @@ server.put('/api/friends/:id', (req, res) => {
     return;
   }
 
-  Friend.findById(id)
-    .then(friend => {
-      Friend.findByIdAndUpdate(friend._id, friendInformation, { new: true })
-        .then(friendInformation => {
-          res.status(200).send(friendInformation);
-          return;
-        })
-        .catch(err => {
-          res.status(500).send({
-            error: 'The friend information could not be modified.',
-          });
-          return;
+  Friend.findByIdAndUpdate(id, friendInformation, { new: true })
+    .then(updatedFriend => {
+      if (updatedFriend === null) {
+        res.status(404).json({
+          error: 'The friend with the specified ID does not exist.',
         });
+        return;
+      }
+
+      res.status(200).send(updatedFriend);
+      return;
     })
     .catch(err => {
-      res.status(404).json({
-        message: 'The friend with the specified ID does not exist.',
-      });
+      if (err.kind === 'ObjectId') {
+        res.status(500).json({
+          error: 'The information could not be retrieved.',
+        });
+        return;
+      }
     });
+
+  // Friend.findById(id)
+  //   .then(friend => {
+  //     Friend.findByIdAndUpdate(friend._id, friendInformation, { new: true })
+  //       .then(friendInformation => {
+  //         res.status(200).send(friendInformation);
+  //         return;
+  //       })
+  //       .catch(err => {
+  //         res.status(500).send({
+  //           error: 'The friend information could not be modified.',
+  //         });
+  //         return;
+  //       });
+  //   })
+  //   .catch(err => {
+  //     res.status(404).json({
+  //       message: 'The friend with the specified ID does not exist.',
+  //     });
+  //   });
 });
 
 mongoose

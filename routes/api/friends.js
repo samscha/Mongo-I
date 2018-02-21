@@ -40,6 +40,31 @@ router.get('/', (req, res) => {
     );
 });
 
+router.get('/api/friends/:id', (req, res) => {
+  const { id } = req.params;
+
+  Friend.findById(id)
+    .then(friend => {
+      if (friend === null) {
+        res.status(404).json({
+          error: 'The friend with the specified ID does not exist.',
+        });
+        return;
+      }
+
+      res.status(200).send(friend);
+      return;
+    })
+    .catch(err => {
+      if (err.kind === 'ObjectId') {
+        res.status(500).json({
+          error: 'The information could not be retrieved.',
+        });
+        return;
+      }
+    });
+});
+
 router.post('/', (req, res) => {
   const { firstName, lastName } = req.body;
   const age = +req.body.age;
@@ -59,6 +84,64 @@ router.post('/', (req, res) => {
         error: 'There was an error while saving the friend to the database',
       }),
     );
+});
+
+router.delete('/api/friends/:id', (req, res) => {
+  const { id } = req.params;
+
+  Friend.findByIdAndRemove(id)
+    .then(deletedFriend => {
+      if (deletedFriend === null) {
+        res.status(404).json({
+          error: 'The friend with the specified ID does not exist.',
+        });
+        return;
+      }
+
+      res.status(200).send(deletedFriend);
+      return;
+    })
+    .catch(err => {
+      if (err.kind === 'ObjectId') {
+        res.status(500).json({
+          error: 'The information could not be retrieved.',
+        });
+        return;
+      }
+    });
+});
+
+router.put('/api/friends/:id', (req, res) => {
+  const { id } = req.params;
+
+  const { firstName, lastName } = req.body;
+  const age = +req.body.age;
+  const friendInformation = { firstName, lastName, age };
+
+  if (!validate({ ...friendInformation, age: req.body.age }, res)) {
+    return;
+  }
+
+  Friend.findByIdAndUpdate(id, friendInformation, { new: true })
+    .then(updatedFriend => {
+      if (updatedFriend === null) {
+        res.status(404).json({
+          error: 'The friend with the specified ID does not exist.',
+        });
+        return;
+      }
+
+      res.status(200).send(updatedFriend);
+      return;
+    })
+    .catch(err => {
+      if (err.kind === 'ObjectId') {
+        res.status(500).json({
+          error: 'The information could not be retrieved.',
+        });
+        return;
+      }
+    });
 });
 
 module.exports = router;

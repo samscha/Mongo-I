@@ -32,6 +32,7 @@ const isOf = age => {
 
 router.get('/', (req, res) => {
   Friend.find()
+    .populate('posts')
     .then(friends => res.status(200).json(friends))
     .catch(err =>
       res.status(500).json({
@@ -44,6 +45,7 @@ router.get('/:id', (req, res) => {
   const { id } = req.params;
 
   Friend.findById(id)
+    .populate('posts')
     .then(friend => {
       if (friend === null) {
         res.status(404).json({
@@ -66,9 +68,9 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { firstName, lastName, middleName } = req.body;
+  const { firstName, lastName, middleName, posts } = req.body;
   const age = +req.body.age;
-  const friendInformation = { firstName, middleName, lastName, age };
+  const friendInformation = { firstName, middleName, lastName, age, posts };
 
   if (!validate({ ...friendInformation, age: req.body.age }, res)) {
     return;
@@ -114,9 +116,9 @@ router.delete('/:id', (req, res) => {
 router.put('/:id', (req, res) => {
   const { id } = req.params;
 
-  const { firstName, lastName } = req.body;
+  const { firstName, lastName, posts } = req.body;
   const age = +req.body.age;
-  const friendInformation = { firstName, lastName, age };
+  const friendInformation = { firstName, lastName, age, posts };
 
   if (!validate({ ...friendInformation, age: req.body.age }, res)) {
     return;

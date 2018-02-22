@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const Post = require('../BlogPosts/PostModel');
+
+const { ObjectId } = mongoose.Schema.Types;
 
 const FriendSchema = new mongoose.Schema({
   firstName: {
@@ -17,6 +20,7 @@ const FriendSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  posts: [{ type: ObjectId, ref: 'Post', required: false }],
   createdOn: {
     type: Date,
     required: true,

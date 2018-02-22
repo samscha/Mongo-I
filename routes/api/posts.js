@@ -5,11 +5,14 @@ const BlogPost = require('../../BlogPosts/PostModel');
 
 router.get('/', (req, res) => {
   BlogPost.find()
-    .populate({
-      path: 'authors',
-      select: 'firstName',
-      options: { limit: 5 },
-    })
+    .populate('authors')
+    .then(posts => res.status(200).json(posts))
+    .catch(err => res.status(500).json({ err }));
+});
+
+router.get('/:id', (req, res) => {
+  BlogPost.findById(req.params.id)
+    .populate('authors')
     .then(posts => res.status(200).json(posts))
     .catch(err => res.status(500).json({ err }));
 });
